@@ -1,7 +1,7 @@
-const factory = function (componentsPath, pagesPath, aemMocksPath, backendTemplates) {
+const factory = function (componentsPath, pagesPath, aemMocksPath, backendTemplates, skipXSS) {
   const express = require('express')
   const router = express.Router({ mergeParams: true })
-  const service = require('./service')(componentsPath, pagesPath, aemMocksPath, backendTemplates)
+  const service = require('./service')(componentsPath, pagesPath, aemMocksPath, backendTemplates, skipXSS)
 
   router.get('', function (req, res, next) {
     res.send({ running: true })

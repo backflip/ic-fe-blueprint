@@ -3,7 +3,7 @@ const marked = require('marked')
 const hbs = require('handlebars')
 const axios = require('axios')
 
-module.exports = function (pathToComponents, pathToPages, pathToAemMocks, backendTemplates = 'hbs') {
+module.exports = function (pathToComponents, pathToPages, pathToAemMocks, backendTemplates = 'hbs', skipXSS = false) {
   const registerPartials = function (directory) {
     var files = fs.readdirSync(directory)
 
@@ -96,7 +96,7 @@ module.exports = function (pathToComponents, pathToPages, pathToAemMocks, backen
             cmsTemplate = await service.getHtlTemplate(path, view)
             if (cmsTemplate) {
               const engine = require('./htl/engine')
-              raw = await engine(vm.htl || {}, cmsTemplate, { useDir: pathToAemMocks, useOptions: { model: viewModel } })
+              raw = await engine(vm.htl || {}, cmsTemplate, { useDir: pathToAemMocks, useOptions: { model: viewModel, skipXSS } })
               if (raw) {
                 raw = raw.body
               }

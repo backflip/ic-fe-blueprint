@@ -15,6 +15,7 @@ const scriptPath = definePath(args.scriptPath, rootPath, config.scripts)
 const assetsPath = definePath(args.assetsPath, rootPath, config.assets)
 const directivePath = definePath(args.diretivePath, rootPath, config.directives)
 const backendTemplates = args.backendTemplates || 'hbs'
+const skipXSS = args.skipXSS
 
 let aemMocksPath
 if (backendTemplates === 'htl') {
@@ -83,7 +84,7 @@ mocksWatcher.on('ready', function () {
   })
 })
 
-const api = require('./api')(componentsPath, pagesPath, aemMocksPath, backendTemplates)
+const api = require('./api')(componentsPath, pagesPath, aemMocksPath, backendTemplates, skipXSS)
 
 // Initial builder
 
