@@ -181,21 +181,12 @@ export default {
     },
 
     'data.cmsOnly': {
-      immediate: true,
       handler: function (isCmsOnly) {
         if (isCmsOnly && this.$route.params.tab === 'view' && this.data.raw) {
           this.$router.replace({ params: { tab: 'raw' } })
-        }
-
-        if (!isCmsOnly && this.$route.params.tab === 'raw') {
+        } else if (this.$route.params.tab === 'raw' && !this.data.raw) {
           this.$router.replace({ params: { tab: 'view' } })
         }
-      }
-    },
-
-    '$route.params.tab' (tab) {
-      if (this.data.cmsOnly && tab === 'view') {
-        this.$router.replace({ params: { tab: 'raw' } })
       }
     }
   },
