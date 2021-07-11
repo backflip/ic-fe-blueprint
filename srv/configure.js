@@ -26,11 +26,14 @@ const potentialMockPaths = [componentsPath, aemMocksPath].filter(Boolean).map(di
 
 // Watchers
 
-const componentsWatcher = chokidar.watch(componentsPath)
+const componentsWatcher = chokidar.watch(componentsPath, {
+  ignored: (file) => !file.match(/\.vue$/)
+})
 const pagesWatcher = chokidar.watch(pagesPath)
 const directivesWatcher = chokidar.watch(directivePath)
-const assetsWatcher = chokidar.watch(assetsPath)
-const stylesWatcher = chokidar.watch(stylePath)
+const assetsWatcher = chokidar.watch(assetsPath, {
+  ignored: (file) => !file.match(/\.js$/)
+})
 const mocksWatcher = chokidar.watch(potentialMockPaths)
 
 componentsWatcher.on('ready', function () {
@@ -54,14 +57,6 @@ directivesWatcher.on('ready', function () {
   })
 })
 
-stylesWatcher.on('ready', function () {
-  stylesWatcher.on('all', function () {
-    console.log('get new styles')
-    builder.build(componentsPath, stylePath, scriptPath, path.resolve(__dirname, config.componentsImportFile))
-    builder.buildPages(pagesPath, stylePath, scriptPath, path.resolve(__dirname, config.pagesImportFile))
-  })
-})
-
 assetsWatcher.on('ready', function () {
   assetsWatcher.on('all', function () {
     console.log('get new assets')
@@ -72,15 +67,12 @@ assetsWatcher.on('ready', function () {
 
 mocksWatcher.on('ready', function () {
   mocksWatcher.on('all', function () {
-    // Make sure mock files are not cached
+    console.log('clear mock cache')
     Object.keys(require.cache).forEach((file, i) => {
       if ([componentsPath, aemMocksPath].find(dir => file.includes(dir))) {
         delete require.cache[file]
       }
     })
-    console.log('get new mocks')
-    builder.build(componentsPath, stylePath, scriptPath, path.resolve(__dirname, config.componentsImportFile))
-    builder.buildPages(pagesPath, stylePath, scriptPath, path.resolve(__dirname, config.pagesImportFile))
   })
 })
 
